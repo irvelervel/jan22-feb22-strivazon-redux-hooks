@@ -19,4 +19,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer
-export const { changeUsername } = userSlice.actions
+export const { changeUsername } = userSlice.actions // <-- action creator

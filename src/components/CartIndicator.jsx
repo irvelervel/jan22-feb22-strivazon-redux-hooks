@@ -16,17 +16,6 @@ import { changeUsername } from '../slices/user/userSlice'
 
 // mapDispatchToProps allows you to define props that, once invoked, will dispatch actions!
 
-const mapDispatchToProps = (dispatch) => {
-  // mapDispatchToProps is for DISPATCHING ACTIONS from your component
-  // "write" access
-  // this function exists for linking the dispatching capabilities to the props of this components
-  return {
-    changeUsernameProp: (name) => {
-      dispatch(changeUsername(name))
-    },
-  }
-}
-
 // REMEMBER THE RULES OF HOOKS:
 // 1) use react hooks just in REACT FUNCTIONAL COMPONENTS <-- checked
 // 2) use react hooks just AT THE TOP LEVEL of the component, outside of any loop, function, conditional, etc.
@@ -36,12 +25,17 @@ const CartIndicator = () => {
 
   const [inputValue, setInputValue] = useState('')
 
+  // useSelector is useful for accessing values from the Redux Store
+  // just like mapStateToProps, but in a more direct way, without using the connect function
   const cartLength = useSelector((state) => state.cart.content.length)
   // cartLength is not a prop anymore! we're declaring it INSIDE the component
   // useSelector is called in this way because we're SELECTING out the redux store the value we want to read
   const userName = useSelector((state) => state.user.name)
   const areBooksLoading = useSelector((state) => state.book.loading)
   const areBooksCrashed = useSelector((state) => state.book.error)
+
+  const dispatch = useDispatch() // <-- this is typically done ONCE for every component, INSIDE the component!
+  // dispatch() is all you need!
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -51,6 +45,7 @@ const CartIndicator = () => {
     // now how can we send the inputValue, my name, to the redux store? DISPATCHING AN ACTION
     // I want to dispatch changeUsername from here! I'll dispatch the action with inputValue
     // changeUsernameProp(inputValue)
+    dispatch(changeUsername(inputValue))
   }
 
   return (

@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { useState, useEffect } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import { connect } from 'react-redux'
@@ -30,79 +30,83 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-class BookDetail extends Component {
-  state = {
-    book: null,
-  }
+const BookDetail = ({ bookSelected, userName, addToCartProp }) => {
+  // state = {
+  //   book: null,
+  // }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.bookSelected !== this.props.bookSelected) {
-      this.setState({
-        book: this.props.bookSelected,
-      })
-    }
-  }
+  const [book, setBook] = useState(null)
 
-  render() {
-    return (
-      <div className="mt-3">
-        {this.state.book ? (
-          <>
-            <Row>
-              <Col sm={12}>
-                <h1>{this.state.book.title}</h1>
-              </Col>
-            </Row>
-            <Row className="mt-3">
-              <Col sm={4}>
-                <div className="mt-3">
-                  <img
-                    className="book-cover"
-                    src={this.state.book.imageUrl}
-                    alt="book selected"
-                  />
-                </div>
-              </Col>
-              <Col sm={8}>
-                <p>
-                  <span className="font-weight-bold">Description:</span>
-                  {this.state.book.description}
-                </p>
-                <p>
-                  <span className="font-weight-bold">Price:</span>
-                  {this.state.book.price}
-                </p>
-                {/* I want to hide the button if the user hasn't logged in yet... */}
-                {/* the user will not have logged in yet if the name property in the user slice is still '' */}
-                {/* ...so I have to check this.props.userName and check if it's still empty! */}
-                {this.props.userName ? (
-                  <Button
-                    color="primary"
-                    onClick={() => {
-                      // in here we should dispatch the action
-                      // to trigger the reducer
-                      // that will add a book to the content array
-                      this.props.addToCartProp(this.state.book)
-                    }}
-                  >
-                    ADD TO CART
-                  </Button>
-                ) : (
-                  <div>You need to log in for adding stuff to the cart!</div>
-                )}
-              </Col>
-            </Row>
-          </>
-        ) : (
+  useEffect(() => {
+    setBook(bookSelected)
+  }, [bookSelected])
+
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.bookSelected !== this.props.bookSelected) { // <-- we were tracking down a change in bookSelected
+  //     this.setState({
+  //       book: this.props.bookSelected,
+  //     })
+  //   }
+  // }
+
+  return (
+    <div className="mt-3">
+      {book ? (
+        <>
           <Row>
             <Col sm={12}>
-              <h3>Please select a book!</h3>
+              <h1>{book.title}</h1>
             </Col>
           </Row>
-        )}
-      </div>
-    )
-  }
+          <Row className="mt-3">
+            <Col sm={4}>
+              <div className="mt-3">
+                <img
+                  className="book-cover"
+                  src={book.imageUrl}
+                  alt="book selected"
+                />
+              </div>
+            </Col>
+            <Col sm={8}>
+              <p>
+                <span className="font-weight-bold">Description:</span>
+                {book.description}
+              </p>
+              <p>
+                <span className="font-weight-bold">Price:</span>
+                {book.price}
+              </p>
+              {/* I want to hide the button if the user hasn't logged in yet... */}
+              {/* the user will not have logged in yet if the name property in the user slice is still '' */}
+              {/* ...so I have to check this.props.userName and check if it's still empty! */}
+              {userName ? (
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    // in here we should dispatch the action
+                    // to trigger the reducer
+                    // that will add a book to the content array
+                    addToCartProp(book)
+                  }}
+                >
+                  ADD TO CART
+                </Button>
+              ) : (
+                <div>You need to log in for adding stuff to the cart!</div>
+              )}
+            </Col>
+          </Row>
+        </>
+      ) : (
+        <Row>
+          <Col sm={12}>
+            <h3>Please select a book!</h3>
+          </Col>
+        </Row>
+      )}
+    </div>
+  )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookDetail)
