@@ -1,36 +1,36 @@
 import { useState, useEffect } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { addToCart } from '../slices/cart/cartSlice'
 
 // mapStateToProps gives you READ ACCESS
-const mapStateToProps = (state) => {
-  // the state argument is the WHOLE REDUX STORE
-  return {
-    // now in here I'd like to read the name property in the user slice
-    userName: state.user.name,
-  }
-  // let's not add any prop in read-mode here because we don't need them!
-  // we just need to DISPATCH ACTIONS, add a book to the cart!
-}
+// const mapStateToProps = (state) => {
+//   // the state argument is the WHOLE REDUX STORE
+//   return {
+//     // now in here I'd like to read the name property in the user slice
+//     userName: state.user.name,
+//   }
+//   // let's not add any prop in read-mode here because we don't need them!
+//   // we just need to DISPATCH ACTIONS, add a book to the cart!
+// }
 
 // mapDispatchToProps is once again a function returning an object
 // every element of this object will be a PROP for this component!
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // these props, when invoked, will dispatch actions!
-    // let's give a name to my method, it will be invokable with that name
-    addToCartProp: (book) => {
-      // when this prop is invoked, you'll DISPATCH AN ACTION!
-      dispatch(addToCart(book))
-    },
-    // addToCartProp is callable inside the component from the props!
-    // it's going to be in this.props.addToCartProps()
-  }
-}
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     // these props, when invoked, will dispatch actions!
+//     // let's give a name to my method, it will be invokable with that name
+//     addToCartProp: (book) => {
+//       // when this prop is invoked, you'll DISPATCH AN ACTION!
+//       dispatch(addToCart(book))
+//     },
+//     // addToCartProp is callable inside the component from the props!
+//     // it's going to be in this.props.addToCartProps()
+//   }
+// }
 
-const BookDetail = ({ bookSelected, userName, addToCartProp }) => {
+const BookDetail = ({ bookSelected }) => {
   // state = {
   //   book: null,
   // }
@@ -40,6 +40,10 @@ const BookDetail = ({ bookSelected, userName, addToCartProp }) => {
   useEffect(() => {
     setBook(bookSelected)
   }, [bookSelected])
+
+  const userName = useSelector((state) => state.user.name)
+
+  const dispatch = useDispatch()
 
   // componentDidUpdate(prevProps) {
   //   if (prevProps.bookSelected !== this.props.bookSelected) { // <-- we were tracking down a change in bookSelected
@@ -87,7 +91,8 @@ const BookDetail = ({ bookSelected, userName, addToCartProp }) => {
                     // in here we should dispatch the action
                     // to trigger the reducer
                     // that will add a book to the content array
-                    addToCartProp(book)
+                    // addToCartProp(book)
+                    dispatch(addToCart(book))
                   }}
                 >
                   ADD TO CART
@@ -109,7 +114,7 @@ const BookDetail = ({ bookSelected, userName, addToCartProp }) => {
   )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(BookDetail)
+export default BookDetail
 
 // connect takes up to 2 arguments:
 // 1) mapStateToProps <-- giving READ ACCESS to the store

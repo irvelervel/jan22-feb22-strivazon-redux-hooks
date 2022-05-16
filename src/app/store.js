@@ -1,16 +1,28 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import cartReducer from '../slices/cart/cartSlice'
 import userReducer from '../slices/user/userSlice'
 import bookReducer from '../slices/book/bookSlice'
+import { persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage' // <-- this is the localStorage engine
+
+const reducers = combineReducers({
+  cart: cartReducer,
+  // the name "cart" should match the name of the slice!
+  user: userReducer,
+  book: bookReducer,
+})
+
+const persistConfig = {
+  key: 'root', // <-- the key property tells the persistency which part of the store to save/rehydrate. with 'root', we're persisting the whole redux store
+  // now let's give redux-persist the engine, the technology we want to use for writing down the state before refreshing
+  storage: storage,
+}
+
+const persistedReducer = persistReducer(persistConfig, reducers)
 
 export default configureStore({
   // let's define our reducers
-  reducer: {
-    cart: cartReducer,
-    // the name "cart" should match the name of the slice!
-    user: userReducer,
-    book: bookReducer,
-  },
+  reducer: persistedReducer,
 })
 
 // this file is just setting up the Redux Store, and this implementation is valid for ANY JS application

@@ -10,12 +10,20 @@ import './style/index.css'
 import { Provider } from 'react-redux'
 import configureStore from './app/store'
 
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistStore } from 'redux-persist'
+
+let persistor = persistStore(configureStore)
+
 // with Provider we're injecting our Redux Store into the React application
 
 ReactDOM.render(
   <Provider store={configureStore}>
     {/* wrap your entire application tree into Provider, just like you'd do with BrowserRouter */}
-    <App />
+    <PersistGate persistor={persistor}>
+      {/* PersistGate is the persistency layer, we need it if we want redux-persist to reach our React app */}
+      <App />
+    </PersistGate>
   </Provider>,
   document.getElementById('root')
 )
