@@ -4,6 +4,7 @@ import userReducer from '../slices/user/userSlice'
 import bookReducer from '../slices/book/bookSlice'
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage' // <-- this is the localStorage engine
+import { encryptTransform } from 'redux-persist-transform-encrypt'
 
 const reducers = combineReducers({
   cart: cartReducer,
@@ -16,6 +17,11 @@ const persistConfig = {
   key: 'root', // <-- the key property tells the persistency which part of the store to save/rehydrate. with 'root', we're persisting the whole redux store
   // now let's give redux-persist the engine, the technology we want to use for writing down the state before refreshing
   storage: storage,
+  transforms: [
+    encryptTransform({
+      secretKey: process.env.REACT_APP_PERSIST_KEY,
+    }),
+  ],
 }
 
 const persistedReducer = persistReducer(persistConfig, reducers)
